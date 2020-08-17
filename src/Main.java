@@ -36,6 +36,11 @@ public class Main {
                     stations.get(i + 1) + " - " +
                     stations.get(i + 2));
         }
+    }
+}
+
+class T {
+    public static void main(String[] args) throws ClassNotFoundException {
 
     }
 }
