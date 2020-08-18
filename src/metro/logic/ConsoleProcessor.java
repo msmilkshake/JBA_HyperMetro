@@ -12,7 +12,7 @@ public class ConsoleProcessor {
     private String[] args;
     
     public ConsoleProcessor() {
-        final String CMD_REGEX = "(?<cmd>(?<=\\/)\\S+)(?:[ \\t])*(?<args>.+)?";
+        final String CMD_REGEX = "(?<cmd>(?<=/)\\S+)(?:[ \\t])*(?<args>.+)?";
         final String ARGS_REGEX = "(?<arg>\".+?\"|\\S+)";
         CMD_PTRN = Pattern.compile(CMD_REGEX);
         ARGS_PTRN = Pattern.compile(ARGS_REGEX);

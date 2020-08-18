@@ -1,5 +1,3 @@
-package metro;
-
 import metro.ui.TextUI;
 
 import java.util.Scanner;

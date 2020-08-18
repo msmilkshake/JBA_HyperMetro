@@ -95,7 +95,7 @@
 
 <p><strong>Example 1 </strong></p>
 
-<pre><code class="language-no-highlight">&gt; java metro.Main test-file.json
+<pre><code class="language-no-highlight">&gt; java Main test-file.json
 &gt; /output Hammersmith-and-City
 depot - Hammersmith - Westbourne-park
 Hammersmith - Westbourne-park - destination
@@ -103,7 +103,7 @@ Hammersmith - Westbourne-park - destination
 
 <p><strong>Example 2</strong></p>
 
-<pre><code class="language-no-highlight">&gt; java metro.Main test-file.json
+<pre><code class="language-no-highlight">&gt; java Main test-file.json
 &gt; /add Hammersmith-and-City "Test station"
 &gt; /output Hammersmith-and-City
 depot - Hammersmith - Westbourne-park
@@ -113,7 +113,7 @@ Westbourne-park - Test station - depot
 
 <p><strong>Example 3</strong> </p>
 
-<pre><code class="language-no-highlight">&gt; java metro.Main test-file.json
+<pre><code class="language-no-highlight">&gt; java Main test-file.json
 &gt; /remove Hammersmith-and-City Hammersmith
 &gt; /output Hammersmith-and-City
 depot - Westbourne-park - depot
