@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-public class JsonIO {
+public class JsonRead {
     
     protected static Gson gson = new Gson();
     
@@ -24,7 +24,7 @@ public class JsonIO {
         try (JsonReader reader = new JsonReader(new FileReader(f))) {
             jsonData = gson.fromJson(reader, type);
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Incorrect file");
         } catch (IOException e) {
             e.printStackTrace();
         }
