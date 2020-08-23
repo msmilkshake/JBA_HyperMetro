@@ -1,8 +1,11 @@
-package metro.io;
+package metro.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import metro.logic.StationNode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,19 +18,15 @@ public class JsonRead {
     
     protected static Gson gson = new Gson();
     
-    public static HashMap<String, HashMap<Integer, String>> readFile(File f) {
-        HashMap<String, HashMap<Integer, String>> jsonData = new HashMap<>();
-        Type type =
-                new TypeToken<HashMap<String, HashMap<Integer, String>>>(){}
-                        .getType();
-    
+    public static JsonElement readFile(File f) {
+        JsonElement root = null;
         try (JsonReader reader = new JsonReader(new FileReader(f))) {
-            jsonData = gson.fromJson(reader, type);
+            root = JsonParser.parseReader(reader);
         } catch (FileNotFoundException e) {
             System.out.println("Incorrect file");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return jsonData;
+        return root;
     }
 }

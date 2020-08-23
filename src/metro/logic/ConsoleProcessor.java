@@ -34,8 +34,9 @@ public class ConsoleProcessor {
             args = new String[argsCount];
             
             for (int i = 0; i < argsCount; ++i) {
-                argsMatcher.find();
-                args[i] = argsMatcher.group("arg").replace("\"", "");
+                if (argsMatcher.find()) {
+                    args[i] = argsMatcher.group("arg").replace("\"", "");
+                }
             }
         }
         
