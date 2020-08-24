@@ -51,10 +51,32 @@ public class MetroNetwork {
         }
     }
     
-    private boolean isValidLine(LinkedList<StationNode> line) {
-        if (line == null) {
-            System.out.println("Not an existing line name.");
-            return false;
+    public void connect(String line1Name, String station1,
+            String line2Name, String station2) {
+        
+        LinkedList<StationNode> line1 = metroNetwork.get(line1Name);
+        LinkedList<StationNode> line2 = metroNetwork.get(line2Name);
+        
+        if (isValidLine(line1, line2)) {
+            int i1 = line1.indexOf(new StationNode(station1));
+            int i2 = line2.indexOf(new StationNode(station2));
+            
+            if (i1 == -1 || i2 == -1) {
+                System.out.println("Not an existing station.");
+            }
+            
+            line1.get(i1).addTransferLine(line2Name, station2);
+            line2.get(i2).addTransferLine(line1Name, station1);
+        }
+    }
+    
+    @SafeVarargs
+    private boolean isValidLine(LinkedList<StationNode> ... lines) {
+        for (LinkedList<StationNode> line : lines) {
+            if (line == null) {
+                System.out.println("Not an existing line name.");
+                return false;
+            }
         }
         return true;
     }

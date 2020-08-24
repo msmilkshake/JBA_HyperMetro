@@ -51,7 +51,7 @@ public class TextUI {
                     output();
                     break;
                 case "connect":
-                    
+                    connect();
                     break;
                 case "exit":
                     exitFlag = true;
@@ -85,6 +85,14 @@ public class TextUI {
     
     private void output() {
         network.printLine(cp.getArgs()[0]);
+    }
+    
+    private void connect() {
+        network.connect(
+                cp.getArgs()[0],
+                cp.getArgs()[1],
+                cp.getArgs()[2],
+                cp.getArgs()[3]);
     }
     
     private void validateArgs(String[] args) {
