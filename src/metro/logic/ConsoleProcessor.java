@@ -51,3 +51,10 @@ public class ConsoleProcessor {
         return args;
     }
 }
+
+
+class A {
+    public static void main(String[] args) {
+        System.out.println("More test code here!");
+    }
+}

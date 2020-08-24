@@ -8,18 +8,20 @@ import java.util.Scanner;
 
 public class TextUI {
     
+    private final Scanner SCN;
+    
     private MetroNetwork network;
     private File json;
-    private final Scanner SCN;
+    private ConsoleProcessor cp;
     
     public TextUI(String[] args, Scanner scn) {
         validateArgs(args);
         this.SCN = scn;
         network = new MetroNetwork(json);
+        cp = new ConsoleProcessor();
     }
     
     public void start() {
-        ConsoleProcessor cp = new ConsoleProcessor();
         while (true) {
             if (!cp.processLine(SCN.nextLine())) {
                 System.out.println("Invalid command");
@@ -36,17 +38,20 @@ public class TextUI {
             }
             switch (cp.getCmd()) {
                 case "append":
-                    append(cp.getArgs());
+                    append();
                     break;
                 case "add-head":
-                    addHead(cp.getArgs());
+                    addHead();
                     break;
                 case "remove":
-                    remove(cp.getArgs());
+                    remove();
                     break;
                 case "output":
                 case "print":
-                    output(cp.getArgs());
+                    output();
+                    break;
+                case "connect":
+                    
                     break;
                 case "exit":
                     exitFlag = true;
@@ -65,21 +70,21 @@ public class TextUI {
         }
     }
     
-    private void append(String[] args) {
-        network.appendStation(args[0], args[1]);
+    private void append() {
+        network.appendStation(cp.getArgs()[0], cp.getArgs()[1]);
     }
     
-    private void addHead(String[] args) {
-        network.addStationToHead(args[0], args[1]);
+    private void addHead() {
+        network.addStationToHead(cp.getArgs()[0], cp.getArgs()[1]);
         
     }
     
-    private void remove(String[] args) {
-        network.removeStation(args[0], args[1]);
+    private void remove() {
+        network.removeStation(cp.getArgs()[0], cp.getArgs()[1]);
     }
     
-    private void output(String[] args) {
-        network.printLine(args[0]);
+    private void output() {
+        network.printLine(cp.getArgs()[0]);
     }
     
     private void validateArgs(String[] args) {
