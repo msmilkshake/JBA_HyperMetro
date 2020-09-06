@@ -14,8 +14,8 @@ public class ConsoleProcessor {
     public ConsoleProcessor() {
         final String CMD_REGEX = "(?<cmd>(?<=/)\\S+)(?:[ \\t])*(?<args>.+)?";
         final String ARGS_REGEX = "(?<arg>\".+?\"|\\S+)";
-        CMD_PTRN = Pattern.compile(CMD_REGEX);
-        ARGS_PTRN = Pattern.compile(ARGS_REGEX);
+        CMD_PTRN = Pattern.compile(CMD_REGEX, Pattern.UNICODE_CHARACTER_CLASS);
+        ARGS_PTRN = Pattern.compile(ARGS_REGEX, Pattern.UNICODE_CHARACTER_CLASS);
     }
     
     public boolean processLine(String line) {

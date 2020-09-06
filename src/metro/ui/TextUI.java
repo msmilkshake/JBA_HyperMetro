@@ -8,35 +8,34 @@ import java.util.Scanner;
 
 public class TextUI {
     
-    private final Scanner SCN;
+    private static final Scanner SCANNER = new Scanner(System.in);
+    private final ConsoleProcessor CONSOLE;
     
     private MetroNetwork network;
     private File json;
-    private ConsoleProcessor cp;
     
-    public TextUI(String[] args, Scanner scn) {
+    public TextUI(String[] args) {
         validateArgs(args);
-        this.SCN = scn;
         network = new MetroNetwork(json);
-        cp = new ConsoleProcessor();
+        CONSOLE = new ConsoleProcessor();
     }
     
     public void start() {
         while (true) {
-            if (!cp.processLine(SCN.nextLine())) {
+            if (!CONSOLE.processLine(SCANNER.nextLine())) {
                 System.out.println("Invalid command");
                 continue;
             }
             boolean exitFlag = false;
             boolean invalidCmd = false;
-            if (cp.getCmd().equals("exit")) {
+            if (CONSOLE.getCmd().equals("exit")) {
                 break;
             }
-            if (cp.getArgs() == null) {
+            if (CONSOLE.getArgs() == null) {
                 System.out.println("Invalid command");
                 continue;
             }
-            switch (cp.getCmd()) {
+            switch (CONSOLE.getCmd()) {
                 case "append":
                     append();
                     break;
@@ -71,28 +70,28 @@ public class TextUI {
     }
     
     private void append() {
-        network.appendStation(cp.getArgs()[0], cp.getArgs()[1]);
+        network.appendStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
     }
     
     private void addHead() {
-        network.addStationToHead(cp.getArgs()[0], cp.getArgs()[1]);
+        network.addStationToHead(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
         
     }
     
     private void remove() {
-        network.removeStation(cp.getArgs()[0], cp.getArgs()[1]);
+        network.removeStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
     }
     
     private void output() {
-        network.printLine(cp.getArgs()[0]);
+        network.printLine(CONSOLE.getArgs()[0]);
     }
     
     private void connect() {
         network.connect(
-                cp.getArgs()[0],
-                cp.getArgs()[1],
-                cp.getArgs()[2],
-                cp.getArgs()[3]);
+                CONSOLE.getArgs()[0],
+                CONSOLE.getArgs()[1],
+                CONSOLE.getArgs()[2],
+                CONSOLE.getArgs()[3]);
     }
     
     private void validateArgs(String[] args) {

@@ -63,6 +63,7 @@ public class MetroNetwork {
             
             if (i1 == -1 || i2 == -1) {
                 System.out.println("Not an existing station.");
+                return;
             }
             
             line1.get(i1).addTransferLine(line2Name, station2);
@@ -71,7 +72,7 @@ public class MetroNetwork {
     }
     
     @SafeVarargs
-    private boolean isValidLine(LinkedList<StationNode> ... lines) {
+    private boolean isValidLine(LinkedList<StationNode>... lines) {
         for (LinkedList<StationNode> line : lines) {
             if (line == null) {
                 System.out.println("Not an existing line name.");
