@@ -114,5 +114,9 @@ public class TextUI {
             throw new IllegalArgumentException("Expected filename as argument.");
         }
         json = new File(args[0]);
+        if (!json.exists()) {
+            System.out.println("File \"" + json + "\" does not exist");
+            System.exit(0);
+        }
     }
 }
