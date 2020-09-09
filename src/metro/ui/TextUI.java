@@ -9,14 +9,14 @@ import java.util.Scanner;
 public class TextUI {
     
     private static final Scanner SCANNER = new Scanner(System.in);
+    private MetroNetwork NETWORK;
     private final ConsoleProcessor CONSOLE;
     
-    private MetroNetwork network;
     private File json;
     
     public TextUI(String[] args) {
         validateArgs(args);
-        network = new MetroNetwork(json);
+        NETWORK = new MetroNetwork(json);
         CONSOLE = new ConsoleProcessor();
     }
     
@@ -52,6 +52,9 @@ public class TextUI {
                 case "connect":
                     connect();
                     break;
+                case "route":
+                    route();
+                    break;
                 case "exit":
                     exitFlag = true;
                     break;
@@ -70,24 +73,36 @@ public class TextUI {
     }
     
     private void append() {
-        network.appendStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
+        NETWORK.appendStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
     }
     
     private void addHead() {
-        network.addStationToHead(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
+        NETWORK.addStationToHead(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
         
     }
     
     private void remove() {
-        network.removeStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
+        NETWORK.removeStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
     }
     
     private void output() {
-        network.printLine(CONSOLE.getArgs()[0]);
+        if ("!graph".equals(CONSOLE.getArgs()[0])) {
+            NETWORK.printGraph();
+        } else {
+            NETWORK.printLine(CONSOLE.getArgs()[0]);
+        }
     }
     
     private void connect() {
-        network.connect(
+        NETWORK.connectStations(
+                CONSOLE.getArgs()[0],
+                CONSOLE.getArgs()[1],
+                CONSOLE.getArgs()[2],
+                CONSOLE.getArgs()[3]);
+    }
+    
+    private void route() {
+        NETWORK.printRoute(
                 CONSOLE.getArgs()[0],
                 CONSOLE.getArgs()[1],
                 CONSOLE.getArgs()[2],

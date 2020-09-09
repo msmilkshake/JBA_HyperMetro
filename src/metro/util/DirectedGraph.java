@@ -10,7 +10,7 @@ import java.util.Set;
 public class DirectedGraph<T> {
     private final Map<T, Map<T, Double>> graphData = new HashMap<>();
     private final Map<T, T> nodeSet = new HashMap<>();
-    private int edgeCount = 0;
+    protected int edgeCount = 0;
     
     public int getNodeCount() {
         return nodeSet.size();
@@ -79,17 +79,6 @@ public class DirectedGraph<T> {
             ++edgeCount;
         }
         return !Objects.equals(weight, oldWeight);
-    }
-    
-    public boolean addEdge(String data) {
-        String[] splitData = data.split("\\s+");
-        if (splitData.length == 3) {
-            T from = (T) splitData[0];
-            T to = (T) splitData[1];
-            double weight = Double.parseDouble(splitData[2]);
-            return addEdge(from, to, weight);
-        }
-        return false;
     }
     
     public double getEdgeWeight(T from, T to) {
