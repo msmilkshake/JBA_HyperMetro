@@ -55,6 +55,9 @@ public class TextUI {
                 case "route":
                     route();
                     break;
+                case "fastest-route":
+                    fastestRoute();
+                    break;
                 case "exit":
                     exitFlag = true;
                     break;
@@ -73,11 +76,15 @@ public class TextUI {
     }
     
     private void append() {
-        NETWORK.appendStation(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
+        NETWORK.appendStation(CONSOLE.getArgs()[0],
+                CONSOLE.getArgs()[1],
+                Double.parseDouble(CONSOLE.getArgs()[2]));
     }
     
     private void addHead() {
-        NETWORK.addStationToHead(CONSOLE.getArgs()[0], CONSOLE.getArgs()[1]);
+        NETWORK.addStationToHead(CONSOLE.getArgs()[0],
+                CONSOLE.getArgs()[1],
+                Double.parseDouble(CONSOLE.getArgs()[2]));
         
     }
     
@@ -103,6 +110,14 @@ public class TextUI {
     
     private void route() {
         NETWORK.printRoute(
+                CONSOLE.getArgs()[0],
+                CONSOLE.getArgs()[1],
+                CONSOLE.getArgs()[2],
+                CONSOLE.getArgs()[3]);
+    }
+    
+    private void fastestRoute() {
+        NETWORK.printFastestRoute(
                 CONSOLE.getArgs()[0],
                 CONSOLE.getArgs()[1],
                 CONSOLE.getArgs()[2],

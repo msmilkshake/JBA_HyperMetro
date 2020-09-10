@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class Station {
+public class Station implements Weightable {
     
     private final String line;
     private final String station;
+    
     private Map<Station, Station> transfers = new HashMap<>(5, 1.0f);
+    private double time;
     
     public Station(String line, String station) {
         this.line = line;
@@ -37,6 +39,14 @@ public class Station {
         return transfers.keySet();
     }
     
+    public double getTime() {
+        return time;
+    }
+    
+    public void setTime(double time) {
+        this.time = time;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,5 +68,10 @@ public class Station {
     @Override
     public String toString() {
         return station;
+    }
+    
+    @Override
+    public double getWeight() {
+        return time;
     }
 }

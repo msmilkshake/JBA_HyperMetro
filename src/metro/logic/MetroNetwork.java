@@ -25,25 +25,27 @@ public class MetroNetwork {
         return GRAPH.getNode(new Station(line, station));
     }
     
-    public boolean appendStation(String line, String station) {
+    public boolean appendStation(String line, String station, double time) {
         if (getRef(line, station) != null) {
             return false;
         }
         Station newStation = new Station(line, station);
+        newStation.setTime(time);
         Station tail = LINES.get(line).getLast();
-        GRAPH.addEdge(tail, newStation);
+        GRAPH.addEdge(tail, newStation,Double.NaN);
         LINES.get(line).add(newStation);
         return true;
     }
     
-    public boolean addStationToHead(String line, String station) {
+    public boolean addStationToHead(String line, String station, double time) {
         if (getRef(line, station) != null) {
             return false;
         }
         Station depot = LINES.get(line).pop();
         Station newStation = new Station(line, station);
+        newStation.setTime(time);
         Station head = LINES.get(line).getFirst();
-        GRAPH.addEdge(newStation, head);
+        GRAPH.addEdge(newStation, head, Double.NaN);
         LINES.get(line).push(newStation);
         LINES.get(line).push(depot);
         return true;
@@ -74,7 +76,7 @@ public class MetroNetwork {
         }
         GRAPH.removeNode(toRemove);
         if (prev != null && next != null) {
-            GRAPH.addEdge(prev, next);
+            GRAPH.addEdge(prev, next, Double.NaN);
         }
         return toRemove;
     }
@@ -87,7 +89,7 @@ public class MetroNetwork {
         if (ref1 == null || ref2 == null) {
             return false;
         }
-        if (GRAPH.addEdge(ref1, ref2)) {
+        if (GRAPH.addEdge(ref1, ref2, 5.0)) {
             ref1.addTransfer(ref2);
             ref2.addTransfer(ref1);
             return true;
@@ -153,6 +155,25 @@ public class MetroNetwork {
             }
             System.out.println(station.getStation());
         }
+    }
+    
+    public void printFastestRoute(String startLine, String startStation,
+                                  String endLine, String endStation) {
+        Station start = getRef(startLine, startStation);
+        Station end = getRef(endLine, endStation);
+        UTIL.dijkstraSearch(start);
+        List<Station> path = UTIL.getPathTo(end);
+        String currentLine = path.get(0).getLine();
+        for (Station station : path) {
+            if (!station.getLine().equals(currentLine)) {
+                currentLine = station.getLine();
+                System.out.println("Transition to line " + currentLine);
+            }
+            System.out.println(station.getStation());
+        }
+        System.out.println("Total: " +
+                Math.round(UTIL.getDistanceTo(end)) +
+                " minutes in the way");
     }
     
     public void printGraph() {

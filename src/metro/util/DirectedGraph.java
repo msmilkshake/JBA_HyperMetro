@@ -61,11 +61,6 @@ public class DirectedGraph<T> {
     }
     
     public boolean addEdge(T from, T to, double weight, boolean addsNodes) {
-        if (weight == Double.NEGATIVE_INFINITY ||
-                Double.isNaN(weight)) {
-            throw new IllegalArgumentException(
-                    "Weight must be a number or the positive infinity");
-        }
         if (addsNodes) {
             addNode(from);
             addNode(to);

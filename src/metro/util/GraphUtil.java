@@ -1,13 +1,10 @@
 package metro.util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import metro.logic.Weightable;
 
-public class GraphUtil<T> {
+import java.util.*;
+
+public class GraphUtil<T extends Weightable> {
     
     private Map<T, Double> distances;
     private Map<T, T> previousNodes;
@@ -64,7 +61,10 @@ public class GraphUtil<T> {
                 if (settledNodes.contains(node)) {
                     continue;
                 }
-                double weight = graph.getEdgeWeight(previous, node);
+                //double weight = graph.getEdgeWeight(previous, node);
+                double weight = Double.isNaN(graph.getEdgeWeight(previous, node))
+                        ? node.getWeight()
+                        : graph.getEdgeWeight(previous, node);
                 if (weight < distances.get(node)) {
                     distances.put(node, distances.get(previous) + weight);
                     previousNodes.put(node, previous);

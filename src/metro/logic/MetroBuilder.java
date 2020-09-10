@@ -7,6 +7,7 @@ import metro.util.DirectedGraph;
 import metro.util.JsonRead;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,7 +43,6 @@ public class MetroBuilder {
     public void buildNetwork() {
         validateFields();
         buildGraph();
-        buildMap();
         nullify();
     }
     
@@ -55,21 +55,39 @@ public class MetroBuilder {
                 unordered.put(Integer.valueOf(rawStation.getKey()),
                         rawStation.getValue());
             }
+            Integer[] orderedIndexes = unordered.keySet().toArray(Integer[]::new);
+            Arrays.sort(orderedIndexes);
             Station previous = null;
-            for (int i = 1; i <= unordered.size(); ++i) {
+            for (Integer i : orderedIndexes) {
             
                 String line = rawLine.getKey();
                 String name = ((JsonObject) unordered.get(i))
                         .get("name").getAsString();
+                double time;
+                if (((JsonObject) unordered.get(i))
+                        .get("time") == null) {
+                    time = 1.0;
+                } else {
+                    if (((JsonObject) unordered.get(i))
+                            .get("time").isJsonNull()) {
+                        time = ((JsonObject) unordered.get(i - 1))
+                                .get("time").getAsDouble();
+                    } else {
+                        time = ((JsonObject) unordered.get(i))
+                                .get("time").getAsDouble();
+                    }
+                }
                 Station station = new Station(line, name);
                 
                 if (graph.getNode(station) != null) {
                     station = graph.getNode(station);
                 }
+                station.setTime(time);
+    
                 if (previous == null) {
                     graph.addNode(station);
                 } else {
-                    graph.addEdge(previous, station);
+                    graph.addEdge(previous, station, Double.NaN);
                 }
                 if (lines.putIfAbsent(line, new LinkedList<>()) == null) {
                     lines.get(line).add(new Station(line, "depot"));
@@ -85,15 +103,11 @@ public class MetroBuilder {
                         transfer = graph.getNode(transfer);
                     }
                     station.addTransfer(transfer);
-                    graph.addEdge(station, transfer);
+                    graph.addEdge(station, transfer, 5.0);
                 }
             
             }
         }
-    }
-    
-    private void buildMap() {
-    
     }
     
     private Map<Station, Station> buildTransfers(JsonElement rawTransfer) {
