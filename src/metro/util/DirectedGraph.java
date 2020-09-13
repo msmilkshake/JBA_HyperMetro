@@ -12,17 +12,16 @@ public class DirectedGraph<T> {
     private final Map<T, T> nodeSet = new HashMap<>();
     protected int edgeCount = 0;
     
-    public int getNodeCount() {
-        return nodeSet.size();
-    }
-    
     public int getEdgeCount() {
         return edgeCount;
     }
     
     public boolean addNode(T node) {
-        graphData.putIfAbsent(node, new HashMap<>());
-        return nodeSet.putIfAbsent(node, node) == null;
+        
+
+        Map m = graphData.putIfAbsent(node, new HashMap<>());
+        T t = nodeSet.putIfAbsent(node, node);
+        return t == null;
     }
     
     public T getNode(T node) {
@@ -42,10 +41,6 @@ public class DirectedGraph<T> {
             }
         }
         return node;
-    }
-    
-    public Iterator<T> nodeIterator() {
-        return graphData.keySet().iterator();
     }
     
     public Set<T> getNodes() {
@@ -142,7 +137,7 @@ public class DirectedGraph<T> {
         Iterator<T> nodesIter = graphData.keySet().iterator();
         while (nodesIter.hasNext()) {
             T node = nodesIter.next();
-            sb.append(node);
+            sb.append("-").append(node);
             Iterator<T> edgesIter = graphData.get(node).keySet().iterator();
             sb.append(":[");
             while (edgesIter.hasNext()) {

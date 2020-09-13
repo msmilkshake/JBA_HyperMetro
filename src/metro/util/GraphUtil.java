@@ -2,7 +2,12 @@ package metro.util;
 
 import metro.logic.Weightable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GraphUtil<T extends Weightable> {
     
@@ -12,14 +17,6 @@ public class GraphUtil<T extends Weightable> {
     
     public GraphUtil(DirectedGraph<T> graph) {
         this.graph = graph;
-    }
-    
-    public void loadGraph(DirectedGraph<T> graph) {
-        this.graph = graph;
-    }
-    
-    public void breadthFirstSearch(T from) {
-        breadthFirstSearch(from, null);
     }
     
     public void breadthFirstSearch(T from, T to) {
@@ -61,10 +58,7 @@ public class GraphUtil<T extends Weightable> {
                 if (settledNodes.contains(node)) {
                     continue;
                 }
-                //double weight = graph.getEdgeWeight(previous, node);
-                double weight = Double.isNaN(graph.getEdgeWeight(previous, node))
-                        ? node.getWeight()
-                        : graph.getEdgeWeight(previous, node);
+                double weight = graph.getEdgeWeight(previous, node);
                 if (weight < distances.get(node)) {
                     distances.put(node, distances.get(previous) + weight);
                     previousNodes.put(node, previous);

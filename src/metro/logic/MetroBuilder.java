@@ -7,8 +7,6 @@ import metro.util.DirectedGraph;
 import metro.util.JsonRead;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -20,7 +18,8 @@ public class MetroBuilder {
     
     private static final MetroBuilder INSTANCE = new MetroBuilder();
     
-    private MetroBuilder() {}
+    private MetroBuilder() {
+    }
     
     public static MetroBuilder builder() {
         INSTANCE.nullify();
@@ -47,92 +46,68 @@ public class MetroBuilder {
     }
     
     private void buildGraph() {
-        for (Map.Entry<String, JsonElement> rawLine :
+        for (Map.Entry<String, JsonElement> line :
                 rawJson.getAsJsonObject().entrySet()) {
-            Map<Integer, JsonElement> unordered = new HashMap<>();
-            for (Map.Entry<String, JsonElement> rawStation :
-                    rawLine.getValue().getAsJsonObject().entrySet()) {
-                unordered.put(Integer.valueOf(rawStation.getKey()),
-                        rawStation.getValue());
-            }
-            Integer[] orderedIndexes = unordered.keySet().toArray(Integer[]::new);
-            Arrays.sort(orderedIndexes);
-            Station previous = null;
-            for (Integer i : orderedIndexes) {
-            
-                String line = rawLine.getKey();
-                String name = ((JsonObject) unordered.get(i))
-                        .get("name").getAsString();
-                double time;
-                if (((JsonObject) unordered.get(i))
-                        .get("time") == null) {
-                    time = 1.0;
-                } else {
-                    if (((JsonObject) unordered.get(i))
-                            .get("time").isJsonNull()) {
-                        time = ((JsonObject) unordered.get(i - 1))
-                                .get("time").getAsDouble();
-                    } else {
-                        time = ((JsonObject) unordered.get(i))
-                                .get("time").getAsDouble();
-                    }
-                }
-                Station station = new Station(line, name);
-                
-                if (graph.getNode(station) != null) {
-                    station = graph.getNode(station);
-                }
-                station.setTime(time);
-    
-                if (previous == null) {
-                    graph.addNode(station);
-                } else {
-                    graph.addEdge(previous, station, Double.NaN);
-                }
-                if (lines.putIfAbsent(line, new LinkedList<>()) == null) {
-                    lines.get(line).add(new Station(line, "depot"));
-                }
-                lines.get(line).add(station);
-                previous = station;
-            
-                Map<Station, Station> transfers =
-                        buildTransfers(((JsonObject) unordered.get(i))
-                                .get("transfer"));
-                for (Station transfer : transfers.keySet()) {
-                    if (graph.getNode(transfer) != null) {
-                        transfer = graph.getNode(transfer);
-                    }
-                    station.addTransfer(transfer);
-                    graph.addEdge(station, transfer, 5.0);
-                }
-            
-            }
+            buildLine(line.getKey(), line.getValue());
         }
     }
     
-    private Map<Station, Station> buildTransfers(JsonElement rawTransfer) {
-        Map<Station, Station> transfers = new HashMap<>(5, 1.0f);
-        if (rawTransfer.isJsonArray()) {
-            if (((JsonArray) rawTransfer).size() == 0) {
-                return transfers;
-            }
+    private void buildLine(String lineName, JsonElement data) {
+        JsonArray lineData = data.getAsJsonArray();
+        lines.putIfAbsent(lineName, new LinkedList<>());
+        
+        for (JsonElement stationElement : lineData) {
+            JsonObject stationData = stationElement.getAsJsonObject();
+            
+            lines.get(lineName).add(buildStation(lineName, stationData));
         }
-        if (rawTransfer.isJsonObject()) {
-            assert rawTransfer instanceof JsonObject;
-            Station station = new Station(
-                    ((JsonObject) rawTransfer).get("line").getAsString(),
-                    ((JsonObject) rawTransfer).get("station").getAsString());
-            transfers.putIfAbsent(station, station);
-        } else if (rawTransfer.isJsonArray()) {
-            for (JsonElement object : (JsonArray) rawTransfer) {
-                assert object instanceof JsonObject;
-                Station station = new Station(
-                        ((JsonObject) object).get("line").getAsString(),
-                        ((JsonObject) object).get("station").getAsString());
-                transfers.putIfAbsent(station, station);
-            }
+    }
+    
+    private Station buildStation(String lineName, JsonObject stationData) {
+        String name = stationData.get("name").getAsString();
+        JsonArray prev = stationData.getAsJsonArray("prev");
+        JsonArray next = stationData.getAsJsonArray("next");
+        JsonArray transfer = stationData.getAsJsonArray("transfer");
+        double time = Double.NaN;
+        if (next.size() > 0) {
+            time = stationData.get("time").getAsDouble();
         }
-        return transfers;
+        
+        Station newStation = getOrCreate(lineName, name);
+        newStation.setTime(time);
+        graph.addNode(newStation);
+        
+        for (JsonElement prevElement : prev) {
+            Station prevStation = getOrCreate(lineName, prevElement.getAsString());
+            graph.addEdge(newStation, prevStation, prevStation.getTime());
+        }
+        
+        for (JsonElement nextElement : next) {
+            Station nextStation = getOrCreate(lineName, nextElement.getAsString());
+            graph.addEdge(newStation, nextStation, time);
+        }
+        
+        buildTransfer(newStation, transfer);
+        return newStation;
+    }
+    
+    private void buildTransfer(Station station, JsonArray transferData) {
+        for (JsonElement transferElement : transferData) {
+            JsonObject transferObject = transferElement.getAsJsonObject();
+            String line = transferObject.get("line").getAsString();
+            String name = transferObject.get("station").getAsString();
+            Station transfer = getOrCreate(line, name);
+            station.addTransfer(transfer);
+            graph.addEdge(station, transfer, 5.0);
+        }
+    }
+    
+    private Station getOrCreate(String line, String name) {
+        Station station = new Station(line, name);
+        if (graph.getNode(station) != null) {
+            station = graph.getNode(station);
+        }
+        return station;
     }
     
     public MetroBuilder withFile(File file) {

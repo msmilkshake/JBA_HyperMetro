@@ -22,11 +22,6 @@ public class Station implements Weightable {
         return transfers.putIfAbsent(station, station);
     }
     
-    public Station addTransfer(String line, String station) {
-        Station s = new Station(line, station);
-        return transfers.putIfAbsent(s, s);
-    }
-    
     public String getLine() {
         return new String(line);
     }
@@ -67,7 +62,7 @@ public class Station implements Weightable {
     
     @Override
     public String toString() {
-        return station;
+        return station + "(" + line + ")";
     }
     
     @Override

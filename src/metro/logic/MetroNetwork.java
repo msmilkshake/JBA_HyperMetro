@@ -145,8 +145,21 @@ public class MetroNetwork {
                            String endLine, String endStation) {
         Station start = getRef(startLine, startStation);
         Station end = getRef(endLine, endStation);
+        if (start == null) {
+            System.out.println("Station \"" + startStation + "\" of line \"" +
+                    startLine + "\" does not exist.");
+            return;
+        }
+        if (end == null) {
+            System.out.println("Station \"" + endStation + "\" of line \"" +
+                    endLine + "\" does not exist.");
+            return;
+        }
         UTIL.breadthFirstSearch(start, end);
         List<Station> path = UTIL.getPathTo(end);
+        if (path.isEmpty()) {
+            System.out.println("A path does not exist.");
+        }
         String currentLine = path.get(0).getLine();
         for (Station station : path) {
             if (!station.getLine().equals(currentLine)) {
@@ -161,8 +174,21 @@ public class MetroNetwork {
                                   String endLine, String endStation) {
         Station start = getRef(startLine, startStation);
         Station end = getRef(endLine, endStation);
+        if (start == null) {
+            System.out.println("Station \"" + startStation + "\" of line \"" +
+                    startLine + "\" does not exist.");
+            return;
+        }
+        if (end == null) {
+            System.out.println("Station \"" + endStation + "\" of line \"" +
+                    endLine + "\" does not exist.");
+            return;
+        }
         UTIL.dijkstraSearch(start);
         List<Station> path = UTIL.getPathTo(end);
+        if (path.isEmpty()) {
+            System.out.println("A path does not exist.");
+        }
         String currentLine = path.get(0).getLine();
         for (Station station : path) {
             if (!station.getLine().equals(currentLine)) {
